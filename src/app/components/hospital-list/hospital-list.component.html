@@ -18,6 +18,12 @@
                 </div>
             </div>
         </div>
+        <div  *ngIf="hospitals.length==0">
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                No hospitals created! <strong><a class="alert-link" routerLink="/hospitals/add">Create new hospital.</a> </strong>
+            </div>
+        </div>
     </div>
 
 </div>

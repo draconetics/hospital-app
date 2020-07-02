@@ -24,6 +24,18 @@
                 <div>Address is required</div>
               </div>
             </div>
+            <div class="form-inline">
+                <label for="fundation">Date of Fundation</label>
+                <select class="form-control"formControlName="fundationYear">
+                  <option *ngFor="let year of years" [value]="year">{{year}}</option>
+                </select>
+                <select class="form-control"formControlName="fundationMonth" >
+                  <option *ngFor="let month of months" [value]="month">{{monthsByName[month-1]}}</option>
+                </select>
+                <select class="form-control" formControlName="fundationDay">
+                  <option *ngFor="let day of days" [value]="day">{{day}}</option>
+                </select>
+            </div>
             
             <div class="form-group">
                   <button class="btn btn-danger" [disabled]="!form.valid">
