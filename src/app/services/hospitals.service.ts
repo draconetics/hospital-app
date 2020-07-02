@@ -29,4 +29,8 @@ export class HospitalsService {
   updateHospital(id, updatedHospital:Hospital): Observable<Hospital>{
     return this.http.put(`${this.API_URL}/hospitals/${id}`, updatedHospital)
   }
+
+  searchHospitals(name:string,fundation:string){
+    return this.http.get(`${this.API_URL}/hospitals/search?name=${name}&fundation=${fundation}`)
+  }
 }

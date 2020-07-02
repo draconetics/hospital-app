@@ -1,14 +1,39 @@
 <div class="container mb-4">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm" routerLink="/hospitals/add">New Hospital</button>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-10">
+            <h5>Search by:</h5>
+            <h5>Date Fundation (MM/dd/yyyy) and Name</h5>
         <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+            <div class="form-group">
+                <select class="form-control" [(ngModel)]="search.month" name="monthHospital">
+                    <option *ngFor="let month of months" [value]="month">{{monthsByName[month-1]}}</option>
+                </select>
+                <select class="form-control" [(ngModel)]="search.day" name="dayHospital">
+                    <option *ngFor="let day of days" [value]="day">{{day}}</option>
+                </select>
+                <select class="form-control" [(ngModel)]="search.year" name="yearHospital">
+                    <option *ngFor="let year of years" [value]="year">{{year}}</option>
+                </select>
+            </div>
+
+
+
+                <div class="input-group"> 
+                      <input  class="form-control mr-sm-2" type="search" 
+                        placeholder="Hospital Viedma" aria-label="Search" name="nameHospital"
+                        [(ngModel)]="search.name">                      
+                </div>
+                <button class="btn btn-outline-success my-2 my-sm-0" (click)="onSearch()" >Search</button>
+
+
+                
+                
         </form>
         </div>
     </div>
 </div>
-<router-outlet></router-outlet>
+<router-outlet ></router-outlet>

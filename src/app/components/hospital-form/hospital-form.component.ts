@@ -1,29 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { HospitalsService } from '../../services/hospitals.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Hospital } from 'src/app/models/hospital';
 
+import {NgbDateParserFormatter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+
+/**
+ * This Service handles how the date is rendered and parsed from keyboard i.e. in the bound input field.
+ */
+@Injectable()
+export class CustomDateParserFormatter extends NgbDateParserFormatter {
+
+  readonly DELIMITER = '/';
+
+  parse(value: string): NgbDateStruct | null {
+    if (value) {
+      let date = value.split(this.DELIMITER);
+      return {
+        day : parseInt(date[1], 10),
+        month : parseInt(date[0], 10),
+        year : parseInt(date[2], 10)
+      };
+    }
+    return null;
+  }
+
+  format(date: NgbDateStruct | null): string {
+    return date ? date.month + this.DELIMITER + date.day + this.DELIMITER + date.year : '';
+  }
+}
+
+
 @Component({
   selector: 'app-hospital-form',
   templateUrl: './hospital-form.component.html',
-  styleUrls: ['./hospital-form.component.scss']
+  styleUrls: ['./hospital-form.component.scss'],
+  providers: [
+    {provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter}
+  ]
 })
 export class HospitalFormComponent implements OnInit {
 
 
-  years:number[];
-  months:number[];
-  monthsByName:string[] = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  days:number[];
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     address: new FormControl('', Validators.required), 
-    fundationYear:  new FormControl(1901), 
-    fundationMonth: new FormControl(1), 
-    fundationDay: new FormControl(1), 
+    birthday: new FormControl('', Validators.required), 
    });  
   
   hospitalToUpdate:Hospital = {};
@@ -33,19 +58,8 @@ export class HospitalFormComponent implements OnInit {
               private router: Router,
               private activatedRoute: ActivatedRoute) 
   { 
-      this.datesInit();
+      
   }
-
-  datesInit(){
-      let yearsRange = new Date().getFullYear() - 1900;
-      this.years = Array(yearsRange).fill(1901).map((x,i)=>x+i);
-      console.log(this.years);
-      this.months = Array(12).fill(1).map((x,i)=>x+i);
-      console.log(this.months)
-      this.days = Array(31).fill(1).map((x,i)=>x+i);
-      console.log(this.days)
-  }
-
   ngOnInit() {
     const params = this.activatedRoute.snapshot.params;
     
@@ -53,16 +67,19 @@ export class HospitalFormComponent implements OnInit {
       this.hospitalService.getHospital(params.id)
         .subscribe(
           res => {
+            console.log("params id")
             console.log(res);
             this.hospitalToUpdate = res;
-            let created_at = new Date(this.hospitalToUpdate.created_at); 
-            console.log(created_at.getFullYear + "-" + created_at.getMonth + "- " + created_at.getDate() )
+            let newDate = new Date(this.hospitalToUpdate.createdAt);
+            let customDate = {
+                year: newDate.getFullYear(),
+                month: newDate.getMonth() + 1,
+                day: newDate.getDate()
+            }
             this.form.setValue({
                 name: this.hospitalToUpdate.name,
-                address: this.hospitalToUpdate.address,
-                fundationYear: created_at.getFullYear(),
-                fundationMonth: created_at.getMonth()+1,
-                fundationDay: created_at.getDate()
+                address: this.hospitalToUpdate.address,   
+                birthday: customDate
             });
             this.edit = true;
           },
@@ -78,40 +95,48 @@ export class HospitalFormComponent implements OnInit {
 
   onSubmit(){
       console.log("onsubmit");
+      //console.log(this.form.value)
       if( this.edit == false){
           this.saveHospital()
       }else{
           this.updateHospital()
-      }
+      } 
   }
+
+  formToHospital() {
+      
+      let obj = this.form.get('birthday').value;
+      console.log("final seee");
+      console.log(obj);
+      let tmp:Hospital = {
+        id: 0,
+        name:this.form.get('name').value,
+        address: this.form.get('address').value,
+        createdAt:`${obj.month}/${obj.day}/${obj.year}`
+      }
+      return tmp;
+  }
+
   saveHospital() {
     //delete this.game.created_at;
     //delete this.game.id;
     let hospitalJson = JSON.stringify(this.form.value);
-    let formatedDate = this.form.get('fundationMonth').value + "/";
-    formatedDate = formatedDate + this.form.get('fundationDay').value + "/";
-    formatedDate = formatedDate + this.form.get('fundationYear').value;
-    let newHospital:Hospital = {
-        id: 0,
-        name:this.form.get('name').value,
-        address: this.form.get('address').value,
-        created_at: formatedDate
-    }
-    console.log(hospitalJson);
+
+    let newHospital:Hospital = this.formToHospital(); 
     console.log(newHospital)
-    /* this.hospitalService.saveHospital(newHospital)
+    this.hospitalService.saveHospital(newHospital)
       .subscribe(
         res => {
           console.log(res);
           this.router.navigate(['/hospitals']);
         },
         err => console.error(err)
-      ); */
+      ); 
   }
 
   updateHospital() {
-    let h = this.hospitalToUpdate
-    this.hospitalService.updateHospital(h.id, this.form.value)
+    let h:Hospital = this.formToHospital()
+    this.hospitalService.updateHospital(this.hospitalToUpdate.id, h)
       .subscribe(
         res => { 
           console.log(res);

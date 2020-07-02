@@ -17,7 +17,8 @@ import { HospitalsService } from './services/hospitals.service';
 import { HospitalFormComponent } from './components/hospital-form/hospital-form.component';
 import { DoctorMainComponent } from './components/doctor-main/doctor-main.component';
 import { HospitalMainComponent } from './components/hospital-main/hospital-main.component';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { InteractionService } from './services/interaction.service'
 
 @NgModule({
   declarations: [
@@ -35,14 +36,16 @@ import { HospitalMainComponent } from './components/hospital-main/hospital-main.
 
   ],
   imports: [
+    NgbModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     //adding react formuler
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    
   ],
-  providers: [ HospitalsService ],
+  providers: [ HospitalsService, InteractionService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

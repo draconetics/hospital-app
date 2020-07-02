@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Hospital } from '../../models/hospital'
 import { HospitalsService } from '../../services/hospitals.service'
+import { InteractionService } from '../../services/interaction.service'
 
 @Component({
   selector: 'app-hospital-list',
@@ -10,15 +10,47 @@ import { HospitalsService } from '../../services/hospitals.service'
 })
 export class HospitalListComponent implements OnInit {
 
+
+  search: object = null;
+
   hospitals: any = [];
-  constructor(private  hospitalService: HospitalsService) { }
+
+  constructor(  private  hospitalService: HospitalsService,
+                private _interactionService: InteractionService) { 
+
+                }
 
   ngOnInit(): void {
-     this.getHospitals(); 
+      this.interactionServiceSuscription();
+      this.getHospitals(); 
+  }
+
+  interactionServiceSuscription(){
+      this._interactionService.teacherMessage$
+          .subscribe(
+              msg => {
+                console.log("search")
+                  if(msg.id && msg.id == "searchHospitals"){
+                      console.log(msg)
+                      this.searchHospitals(msg.data);
+                  }
+                    
+              }
+          );
   }
 
   getHospitals(){
     this.hospitalService.getHospitals()
+      .subscribe(
+        res => {
+          this.hospitals = res;
+        },
+        err => console.error(err)
+      );
+  }
+
+  searchHospitals(data){
+    this.hospitalService.searchHospitals(data.name,data.fundation)
       .subscribe(
         res => {
           this.hospitals = res;

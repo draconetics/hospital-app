@@ -24,18 +24,32 @@
                 <div>Address is required</div>
               </div>
             </div>
-            <div class="form-inline">
-                <label for="fundation">Date of Fundation</label>
-                <select class="form-control"formControlName="fundationYear">
-                  <option *ngFor="let year of years" [value]="year">{{year}}</option>
-                </select>
-                <select class="form-control"formControlName="fundationMonth" >
-                  <option *ngFor="let month of months" [value]="month">{{monthsByName[month-1]}}</option>
-                </select>
-                <select class="form-control" formControlName="fundationDay">
-                  <option *ngFor="let day of days" [value]="day">{{day}}</option>
-                </select>
-            </div>
+
+
+             <div class="form-group">
+                  <div class="input-group">
+                      <label for="birthday">Date Fundation (MM/dd/yyyy):</label>
+                      <input class="form-control" placeholder="MM/dd/yyyy"
+                            name="dp" ngbDatepicker #d="ngbDatepicker"
+                            formControlName="birthday" 
+                            [ngClass]="{'is-invalid':form.get('birthday').touched && form.get('birthday').invalid}" required >
+                      <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                      </div>
+                      <div *ngIf="form.get('birthday').touched"  class="invalid-feedback">
+                          <div>Birthday is required</div>
+                          <div>Birtday  must be a letaset 6 charector</div>
+                      </div>
+                  </div>
+                    
+                    {{form.get('birthday').errors | json}}
+                    {{form.get('birthday').invalid}}
+              </div>
+
+
+
+
+
             
             <div class="form-group">
                   <button class="btn btn-danger" [disabled]="!form.valid">

@@ -17,7 +17,7 @@ const routes: Routes = [
     children: [
         { path: '', redirectTo:'list', pathMatch: 'full' },
         { path: 'list', component: HospitalListComponent },
-        { path: 'search/:data', component: HospitalListComponent },
+        { path: 'search', component: HospitalListComponent },
       ]  
   },
 
