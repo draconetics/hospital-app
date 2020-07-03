@@ -1,0 +1,77 @@
+<div class="container">
+    <div class="row">
+      <div class="col-10">
+        <a class="btn btn-outline-secondary mb-2" routerLink="/doctors">Back</a>
+        <div class="jumbotron">
+          
+          <h4>Doctor Form</h4>
+          <form name="form" [formGroup]="form" (ngSubmit)="form.valid && onSubmit()">
+            <div class="form-group">
+              <label for="name">Doctor Name</label>
+              <input type="text"  class="form-control" 
+                        formControlName="name" 
+                        [ngClass]="{'is-invalid':form.get('name').touched && form.get('name').invalid}" required />
+              <div class="invalid-feedback">
+                <div>Doctor Name is required</div>
+              </div>
+            </div>
+            <div class="form-group">
+                <label for="name">Doctor Lastname</label>
+                <input type="text"  class="form-control" 
+                          formControlName="lastName" 
+                          [ngClass]="{'is-invalid':form.get('lastName').touched && form.get('lastName').invalid}" required />
+                <div class="invalid-feedback">
+                  <div>Lastname is required</div>
+                </div>
+              </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" 
+                        formControlName="address" 
+                        [ngClass]="{'is-invalid':form.get('address').touched && form.get('address').invalid}" required />
+              <div class="invalid-feedback">
+                <div>Address is required</div>
+              </div>
+            </div>
+
+
+             <div class="form-group">
+                  <div class="input-group">
+                      <label for="bornDate">Birthday (MM/dd/yyyy):</label>
+                      <input class="form-control" placeholder="MM/dd/yyyy"
+                            name="dp" ngbDatepicker #d="ngbDatepicker"
+                            formControlName="bornDate" 
+                            [ngClass]="{'is-invalid':form.get('bornDate').touched && form.get('bornDate').invalid}" required >
+                      <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                      </div>
+                      <div *ngIf="form.get('bornDate').touched"  class="invalid-feedback">
+                          <div>Birthday is required</div>
+                          <div>Birtday  must be a letaset 6 charector</div>
+                      </div>
+                  </div>
+                    
+                    {{form.get('bornDate').errors | json}}
+                    {{form.get('bornDate').invalid}}
+              </div>
+              <div class="form-group">
+                  <label for="hospital">Please select hospital</label>
+                  <select class="form-control" formControlName="hospital">
+                      <option *ngFor="let hosp of HOSPITAL_LIST;index as i" 
+                              [value]="hosp.id" 
+                              [ngClass]="{'is-invalid':form.get('hospital').touched && form.get('hospital').invalid}">
+                              {{hosp.id}} - {{hosp.name}} - {{hosp.address}}
+                      </option>
+                  </select>
+              </div>
+
+            <div class="form-group">
+                  <button class="btn btn-danger" [disabled]="!form.valid">
+                      Save
+                  </button>
+            </div>
+          </form>
+              
+        </div>
+      </div>
+    </div>

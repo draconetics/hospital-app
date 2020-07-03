@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HospitalsService } from '../../services/hospitals.service'
 import { InteractionService } from '../../services/interaction.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hospital-list',
@@ -16,14 +17,23 @@ export class HospitalListComponent implements OnInit {
   hospitals: any = [];
 
   constructor(  private  hospitalService: HospitalsService,
-                private _interactionService: InteractionService) { 
-
+                private _interactionService: InteractionService,
+                private router: Router) { 
+        this.interactionServiceSuscription();
                 }
 
   ngOnInit(): void {
-      this.interactionServiceSuscription();
+      
       this.getHospitals(); 
+      
   }
+
+  
+redirect(){
+    //navigation link.
+    this.ngOnInit()
+}
+
 
   interactionServiceSuscription(){
       this._interactionService.teacherMessage$
@@ -40,6 +50,7 @@ export class HospitalListComponent implements OnInit {
   }
 
   getHospitals(){
+    console.log("get hospitals")
     this.hospitalService.getHospitals()
       .subscribe(
         res => {

@@ -60,6 +60,8 @@ export class HospitalFormComponent implements OnInit {
   { 
       
   }
+
+  
   ngOnInit() {
     const params = this.activatedRoute.snapshot.params;
     
@@ -67,20 +69,8 @@ export class HospitalFormComponent implements OnInit {
       this.hospitalService.getHospital(params.id)
         .subscribe(
           res => {
-            console.log("params id")
             console.log(res);
-            this.hospitalToUpdate = res;
-            let newDate = new Date(this.hospitalToUpdate.createdAt);
-            let customDate = {
-                year: newDate.getFullYear(),
-                month: newDate.getMonth() + 1,
-                day: newDate.getDate()
-            }
-            this.form.setValue({
-                name: this.hospitalToUpdate.name,
-                address: this.hospitalToUpdate.address,   
-                birthday: customDate
-            });
+            this.defaultValuesToForm(res);
             this.edit = true;
           },
           err => console.log(err)
@@ -88,10 +78,22 @@ export class HospitalFormComponent implements OnInit {
     }
       
   }
+
+  defaultValuesToForm(res){
+    this.hospitalToUpdate = res;
+    let dateArray = this.hospitalToUpdate.createdAt.split('/');
+    let customDate = {}
+    customDate['year'] = parseInt(dateArray[2]),
+    customDate['month'] = parseInt(dateArray[0]),
+    customDate['day'] = parseInt(dateArray[1])
+    
+    this.form.setValue({
+        name: this.hospitalToUpdate['name'],
+        address: this.hospitalToUpdate['address'],   
+        birthday: customDate
+    });
+  }
   
-/*   onSubmit(){
-    alert(JSON.stringify(this.form.value));
-  } */
 
   onSubmit(){
       console.log("onsubmit");

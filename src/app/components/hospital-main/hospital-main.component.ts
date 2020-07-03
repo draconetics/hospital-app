@@ -37,11 +37,11 @@ export class HospitalMainComponent implements OnInit {
   datesInit(){
       let yearsRange = new Date().getFullYear() - 1900;
       this.years = Array(yearsRange).fill(1901).map((x,i)=>x+i);
-      console.log(this.years);
+
       this.months = Array(12).fill(1).map((x,i)=>x+i);
-      console.log(this.months)
+
       this.days = Array(31).fill(1).map((x,i)=>x+i);
-      console.log(this.days)
+
   }
 
   onSearch(){
